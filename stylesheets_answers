@@ -1,0 +1,6 @@
+1. The "cascading" in CSS refers to how we start at a broad level with our styling rules, but as we move down and "cascade", we begin to generate more and more specific rules for our HTML. 
+
+2. The H1 could be showing black in any of these scenarios:
+  - There is a embedded stylesheet in the html that defines h1 with a black font color
+  - There is a more specific reference to h1 in the CSS e.g. a reference to the parent class of the #main div
+  - Someone used an !important for the .alt class to make the font black.
