@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+  <title> Betting Game </title>
+  <script type="text/javascript" src="bettingGame.js"></script>
+  <script type="text/javascript" src="jquery-3.1.0.js"></script>
+</head>
+<body>
+
+  <h1> Place your bet!</h1>
+
+  <label for="bet">Bet (Between 5 and 10 dollars inclusive) </label><br>
+  <input type="number" name="bet" id="bet"/>
+  <br>
+
+  <label for="guess">Number to guess (Between 1 and 10 inclusive)</label><br>
+  <input type="number" name="guess" id="guess">
+  <br>
+  <br>
+
+  <input type="submit" value="Bet" id="submit"/>
+  <input type="submit" value="Reset" id="reset" style="display:none;"/>
+
+  <h2> Your current balance is $<span id="balance">50</span></h2>
+  <h2 id="response"></h2>
+
+  <div id="image-balance">
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+    <img src="bill.jpg"/>
+  </div>
+
+<script>
+
+  var playerMoney = 50
+
+  function updateBalanceImage(){
+    $("#image-balance").empty();
+    var imagediv = document.getElementById("image-balance")
+    var numBills = Math.floor(playerMoney / 5);
+    for (var i = 0; i < numBills; i++) {
+      var billImage = document.createElement("img");
+      billImage.src = "bill.jpg";
+      imagediv.appendChild(billImage);
+    }
+  }
+
+  function generateNumber(){
+    return Math.ceil(Math.random() * 10);
+  }
+
+  function validNumbers(bet, guess){
+    if (bet > 10 || bet < 5) {
+      computerResponse("Your bet must be between 5 and 10 dollars (inclusive)!")
+      return false
+    } else if (guess > 10 || guess < 1) {
+      computerResponse("Your guess must be between 1 and 10 (inclusive)!")
+      return false
+    } else {
+      return true
+    }
+  }
+
+  function showReset(){
+    $("#reset").show()
+  }
+
+  function hideReset(){
+    $("#reset").hide()
+  }
+
+  function computerResponse(string){
+    $("#response").html(string)
+  }
+
+  $('#submit').on("click", function(){
+    if (playerMoney > 5) {
+
+      var bet = parseInt($("#bet").val());
+      var guess = parseInt($("#guess").val());
+      var valid = validNumbers(bet, guess);
+
+      if (valid === true) {
+        var computerNumber = generateNumber();
+        var difference = Math.abs(guess - computerNumber);
+        switch(difference){
+          case 0:
+            playerMoney += bet;
+            computerResponse("The number was " + computerNumber + ". You won some money! Your total is $" + playerMoney);
+            break;
+          case 1:
+            computerResponse("The number was " + computerNumber + ". You keep your money. Your total is $" + playerMoney);
+            break;
+          default:
+            playerMoney -= bet;
+            computerResponse("The number was " + computerNumber + ". You lost money! Your total is $" + playerMoney);      
+            break;
+        }
+        $("#balance").html(playerMoney);
+        if (playerMoney < 5) {
+          showReset();
+        };
+      }
+      updateBalanceImage();
+
+    } else {
+      computerResponse("Not enough money!")
+      updateBalanceImage();
+    }
+  });
+
+  $('#reset').on("click", function(){
+    playerMoney = 50
+    $("#balance").html(playerMoney);
+    updateBalanceImage(); 
+    computerResponse("");
+    hideReset();
+  })
+
+
+</script>
+
+</body>
+</html>
